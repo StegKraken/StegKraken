@@ -1,4 +1,4 @@
-# StegOnCrack
+# StegCracken
 StegCracker but actually good
 * Automatically runs Steghide with no password no matter what the wordlistt
 * Instead of automatically spawning a new terminal everytime, import Steghide and call the code directly
