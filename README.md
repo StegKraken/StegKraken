@@ -1,3 +1,7 @@
+<p align="center">
+<img src="logo.png">
+</p>
+
 # StegCracken
 StegCracker but actually good
 * Automatically runs Steghide with no password no matter what the wordlistt
