@@ -5,6 +5,7 @@ use std::io::BufReader;
 use std::path::PathBuf;
 use std::process::Command;
 use structopt::StructOpt;
+use rayon::prelude::*;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = " StegKraken", about = "Fast Steg Bruteforcer")]
@@ -34,19 +35,9 @@ struct Opt {
 fn main() {
     let opt = Opt::from_args();
     println!("{:?}", opt);
-    read_and_split_file(opt.wordlist, opt.image);
+    read_and_split_file(opt.wordlist, opt.image).unwrap();
     println!("Just read file");
-    /*let _stdin = std::io::stdin();
-    let _n = 20;
-    let mut vec = vec![];
 
-    let wordlist = "rockyou.txt";
-    let mut _file = File::open(wordlist).expect("Error, can't open file");
-    let _reader = BufReader::new(_file);
-
-    for line in &_reader.lines().into_iter().chunks(1) {
-        vec.insert(0, line);
-    }*/
 }
 
 fn read_and_split_file(wordlist: PathBuf, image_path: PathBuf) -> io::Result<()>{ 
@@ -60,14 +51,14 @@ fn read_and_split_file(wordlist: PathBuf, image_path: PathBuf) -> io::Result<()>
     for line in reader.lines() {
         buffer.push(line?);
         if buffer.len() == 100{
-            crack_batch(buffer, image);
+            crack_batch(&buffer, image);
         }
     }
     Ok(())
 }
 
-fn crack_batch(batch: Vec<String>, image_path: &str) {
-    batch.iter().map(|x| run_steghide(x, image_path));
+fn crack_batch(batch: &Vec<String>, image_path: &str) {
+    batch.into_par_iter().for_each(|x| run_steghide(x, image_path));
 }
 
 fn run_steghide(password: &String, image_name: &str,) {
