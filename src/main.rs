@@ -62,6 +62,7 @@ fn crack_batch(batch: &Vec<String>, image_path: &str) {
 }
 
 fn run_steghide(password: &String, image_name: &str,) {
+    // TODO check if command returns Ok
     Command::new("steghide")
         .args(&["extract", "-sf", &image_name, "-p", &password, "-f"])
         .output()
