@@ -1,18 +1,14 @@
 package main
 
 import (
-	"flag"
 	"fmt"
 	"io"
 	"os"
 	"os/exec"
 	"runtime"
-)
 
-func Int(name string, value int, usage string) *int {
-	var count int
-	flag.IntVar(&count, "count", 5, "the count of items")
-}
+	"github.com/akamensky/argparse"
+)
 
 func execute_steghide(password string) {
 	// let's try the pwd command herer
@@ -31,9 +27,19 @@ func main() {
 		return
 	}
 
-	// tries execution once with no password
-	execute_steghide("")
-
+	// Create new parser object
+	parser := argparse.NewParser("StegKraken", "Fast Steg Cracking")
+	// Create string flag
+	s := parser.String("i", "image", &argparse.Options{Required: true, Help: "The image to crack"})
+	// Parse input
+	err := parser.Parse(os.Args)
+	if err != nil {
+		// In case of error print error and print usage
+		// This can also be done by passing -h or --help flags
+		fmt.Print(parser.Usage(err))
+	}
+	// Finally print the collected string
+	fmt.Println(*s)
 }
 
 func read_wordlist_and_execute() {
