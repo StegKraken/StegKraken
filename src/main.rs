@@ -34,10 +34,9 @@ struct Opt {
 
 fn main() {
     let opt = Opt::from_args();
+    rayon::ThreadPoolBuilder::new().num_threads(150).build_global().unwrap();
     println!("{:?}", opt);
     read_and_split_file(opt.wordlist, opt.image).unwrap();
-    println!("Just read file");
-
 }
 
 fn read_and_split_file(wordlist: PathBuf, image_path: PathBuf) -> io::Result<()>{ 
@@ -54,6 +53,10 @@ fn read_and_split_file(wordlist: PathBuf, image_path: PathBuf) -> io::Result<()>
             crack_batch(&buffer, image);
         }
     }
+
+    if buffer.len() > 0 || buffer.len() < 100 {
+        crack_batch(&buffer, image);
+    }
     Ok(())
 }
 
@@ -63,8 +66,16 @@ fn crack_batch(batch: &Vec<String>, image_path: &str) {
 
 fn run_steghide(password: &String, image_name: &str,) {
     // TODO check if command returns Ok
-    Command::new("steghide")
+    let status = Command::new("steghide")
         .args(&["extract", "-sf", &image_name, "-p", &password, "-f"])
-        .output()
+        .status()
         .expect("failed to execute process");
+
+    
+    if status.success() {
+        println!("Correct passphrase found: {}", &password);
+        std::process::exit(0);
+    } else {
+        println!("");
+    }
 }
