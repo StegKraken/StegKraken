@@ -36,17 +36,19 @@ struct Opt {
 
 fn main() {
     let opt = Opt::from_args();
-    rayon::ThreadPoolBuilder::new().num_threads(150).build_global().unwrap();
+    let image: &str = &opt.image.into_os_string().into_string().unwrap();
+    let mut blank = "";
+
+    rayon::ThreadPoolBuilder::new().num_threads(350).build_global().unwrap();
+    run_steghide(blank, image);
     println!("{:?}", opt);
-    read_and_split_file(opt.wordlist, opt.image).unwrap();
+    read_and_split_file(opt.wordlist,image).unwrap();
 }
 
-fn read_and_split_file(wordlist: PathBuf, image_path: PathBuf) -> io::Result<()>{ 
+fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()>{ 
     let file = File::open(wordlist)?;
     let reader = BufReader::new(file);
-    let image: &str = &image_path.into_os_string().into_string().unwrap();
-
-
+    let image = image_path;
     
     let mut buffer: std::vec::Vec<String> = Vec::new(); 
     for line in reader.lines() {
