@@ -1,6 +1,7 @@
 use std::path::PathBuf;
 use structopt::StructOpt;
 
+#[macro_use]
 mod tui;
 
 mod cracking;
