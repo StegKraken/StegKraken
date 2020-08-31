@@ -7,6 +7,7 @@ use std::process::{Command};
 use structopt::StructOpt;
 use rayon::prelude::*;
 
+mod tui;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = " StegKraken", about = "Fast Steg Bruteforcer")]
@@ -75,7 +76,7 @@ fn run_steghide(password: &String, image_name: &str,) {
     // println!("process exited with: {}", output.status);
 
     if output.status.success() {
-        println!("Correct passphrase found: {}", &password);
+        detail!(format!("Correct passphrase found: {}", &password));
         println!("Data extracted to current directory.");
         std::process::exit(0);
     } else {
