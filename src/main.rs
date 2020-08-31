@@ -35,13 +35,15 @@ struct Opt {
 }
 
 fn main() {
-    let opt = Opt::from_args();
-    let image: &str = &opt.image.into_os_string().into_string().unwrap();
-    let mut blank = "";
-
     rayon::ThreadPoolBuilder::new().num_threads(350).build_global().unwrap();
-    run_steghide(blank, image);
-    println!("{:?}", opt);
+
+    let opt = Opt::from_args();
+
+    let image: &str = &opt.image.into_os_string().into_string().unwrap();
+
+
+    run_steghide(&String::from(""), image);
+
     read_and_split_file(opt.wordlist,image).unwrap();
 }
 
