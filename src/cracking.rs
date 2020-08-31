@@ -44,3 +44,15 @@ pub fn run_steghide(password: &String, image_name: &str) {
     } else {
     }
 }
+
+pub fn read_and_split_file(wordlist: PathBuf) -> io::Result<()> {
+    let file = File::open(wordlist)?;
+    let reader = BufReader::new(file);
+
+    let mut buffer: std::vec::Vec<String> = Vec::new();
+    for line in reader.lines() {
+        buffer.push(line?);
+        if buffer.len() == 1000 {
+            run_batch(&buffer, image);
+        }
+    }
