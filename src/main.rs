@@ -3,9 +3,10 @@ use std::io;
 use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
-use std::process::Command;
+use std::process::{Command};
 use structopt::StructOpt;
 use rayon::prelude::*;
+
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = " StegKraken", about = "Fast Steg Bruteforcer")]
@@ -66,16 +67,17 @@ fn crack_batch(batch: &Vec<String>, image_path: &str) {
 
 fn run_steghide(password: &String, image_name: &str,) {
     // TODO check if command returns Ok
-    let status = Command::new("steghide")
+    let output= Command::new("steghide")
         .args(&["extract", "-sf", &image_name, "-p", &password, "-f"])
-        .status()
+        .output()
         .expect("failed to execute process");
 
-    
-    if status.success() {
+    // println!("process exited with: {}", output.status);
+
+    if output.status.success() {
         println!("Correct passphrase found: {}", &password);
+        println!("Data extracted to current directory.");
         std::process::exit(0);
     } else {
-        println!("");
     }
 }
