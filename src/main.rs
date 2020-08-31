@@ -1,13 +1,11 @@
-use std::fs::File;
-use std::io;
-use std::io::BufRead;
-use std::io::BufReader;
 use std::path::PathBuf;
-use std::process::{Command};
 use structopt::StructOpt;
-use rayon::prelude::*;
 
 mod tui;
+
+mod cracking;
+
+
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = " StegKraken", about = "Fast Steg Bruteforcer")]
@@ -16,7 +14,7 @@ mod tui;
 /// - GitHub https://github.com/StegKraken/StegKracken
 struct Opt {
     /// The image you want to crack.
-    #[structopt(short, long, use_delimiter = true)]
+    #[structopt()]
     #[structopt(parse(from_os_str))]
     image: PathBuf,
 
@@ -25,64 +23,32 @@ struct Opt {
     #[structopt(parse(from_os_str))]
     wordlist: PathBuf,
 
-    ///Quiet mode. Only output the ports. No Nmap. Useful for grep or outputting to a file.
-    #[structopt(short, long)]
-    quiet: bool,
-
     //Accessible mode. Turns off features which negatively affect screen readers.
     #[structopt(short, long)]
     accessible: bool,
+
+    /// How many threads do you want to run?
+    #[structopt(short, long, default_value = "350")]
+    threads: usize,
 }
 
 fn main() {
-    rayon::ThreadPoolBuilder::new().num_threads(350).build_global().unwrap();
-
     let opt = Opt::from_args();
+
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(opt.threads)
+        .build_global()
+        .unwrap();
 
     let image: &str = &opt.image.into_os_string().into_string().unwrap();
 
+    print_opening();
 
-    run_steghide(&String::from(""), image);
+    cracking::run_steghide(&String::from(""), image);
 
-    read_and_split_file(opt.wordlist,image).unwrap();
+    cracking::read_and_split_file(opt.wordlist, image).unwrap();
 }
 
-fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()>{ 
-    let file = File::open(wordlist)?;
-    let reader = BufReader::new(file);
-    let image = image_path;
-    
-    let mut buffer: std::vec::Vec<String> = Vec::new(); 
-    for line in reader.lines() {
-        buffer.push(line?);
-        if buffer.len() == 100{
-            crack_batch(&buffer, image);
-        }
-    }
-
-    if buffer.len() > 0 || buffer.len() < 100 {
-        crack_batch(&buffer, image);
-    }
-    Ok(())
-}
-
-fn crack_batch(batch: &Vec<String>, image_path: &str) {
-    batch.into_par_iter().for_each(|x| run_steghide(x, image_path));
-}
-
-fn run_steghide(password: &String, image_name: &str,) {
-    // TODO check if command returns Ok
-    let output= Command::new("steghide")
-        .args(&["extract", "-sf", &image_name, "-p", &password, "-f"])
-        .output()
-        .expect("failed to execute process");
-
-    // println!("process exited with: {}", output.status);
-
-    if output.status.success() {
-        detail!(format!("Correct passphrase found: {}", &password));
-        println!("Data extracted to current directory.");
-        std::process::exit(0);
-    } else {
-    }
+fn print_opening() {
+    println!("StegKraken. \n-Discord (support) https://discord.gg/gfwzV9U \n-GitHub https://github.com/StegKraken/StegKracken")
 }
