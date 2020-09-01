@@ -8,20 +8,38 @@ use std::process::Command;
 
 pub fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()> {
     let file = File::open(wordlist)?;
-    let reader = BufReader::new(file);
-    let image = image_path;
+    let file = BufReader::new(file);
 
-    let mut buffer: std::vec::Vec<String> = Vec::new();
-    for line in reader.lines() {
-        buffer.push(line?);
-        if buffer.len() == 1000 {
-            crack_batch(&buffer, image);
+    let mut strings_vector: std::vec::Vec<String> = Vec::new();
+    //let mut stringsVector = Vec::new();
+
+
+    let mut reader = BufReader::new(file);
+    let mut buf = vec![];
+
+    while let Ok(_) = reader.read_until(b'\n', &mut buf) {
+        if buf.is_empty() {
+            break;
         }
+        let line = String::from_utf8_lossy(&buf);
+        strings_vector.push(line.to_string());
+        if strings_vector.len() > 99 {
+            crack_batch(&strings_vector, image_path);
+            buf.clear();
+            strings_vector.clear();
+        }
+        buf.clear();
+    }
+    // if wordlist is exhausted but we still have passwords
+    // try them
+    // this helps us if the wordlist is uneven
+    if strings_vector.len() > 0{
+        crack_batch(&strings_vector, image_path);
     }
 
-    if buffer.len() > 0 || buffer.len() < 100 {
-        crack_batch(&buffer, image);
-    }
+    // wordlist is exhausted!
+    println!("Wordlist exhausted. The password wasn't found in this wordlist.");
+
     Ok(())
 }
 
