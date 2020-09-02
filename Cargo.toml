@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = ["heiss, bee"]
 edition = "2018"
 license = "mit"
+description = "fast stegcracker"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
