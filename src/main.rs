@@ -29,7 +29,7 @@ struct Opt {
     accessible: bool,
 
     /// How many threads do you want to run?
-    #[structopt(short, long, default_value = "350")]
+    #[structopt(short, long, default_value = "100")]
     threads: usize,
 }
 

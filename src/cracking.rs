@@ -7,17 +7,28 @@ use std::path::PathBuf;
 use std::process::Command;
 
 pub fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()> {
-    let file = File::open(wordlist)?;
+    let file = match File::open(wordlist){
+        Ok(x) => {x}
+        Err(y) => {panic!("This errors")}
+    };
     let reader = BufReader::new(file);
     let image = image_path;
 
     let mut buffer: std::vec::Vec<String> = Vec::new();
     for line in reader.lines() {
-        buffer.push(line?);
+        match line{
+            Ok(x) => {
+                println!("{}", x);
+                buffer.push(x);
+            }
+            Err(_) => {}
+        }
+        
         if buffer.len() == 1000 {
             crack_batch(&buffer, image);
         }
     }
+
 
     if buffer.len() > 0 || buffer.len() < 100 {
         crack_batch(&buffer, image);
