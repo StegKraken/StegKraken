@@ -13,26 +13,32 @@ pub fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()
     };
     let reader = BufReader::new(file);
     let image = image_path;
+    let mut counter: u64 = 0;
 
     let mut buffer: std::vec::Vec<String> = Vec::new();
     for line in reader.lines() {
         match line{
             Ok(x) => {
-                println!("{}", x);
+                //println!("{}", x);
                 buffer.push(x);
             }
             Err(_) => {}
         }
-        
-        if buffer.len() == 1000 {
+        if buffer.len() > 100_000 {
+            counter = counter + 100_000;
+            println!("{}", counter);
             crack_batch(&buffer, image);
+            buffer.clear();
         }
     }
+    println!("Yup sir I get here");
+    println!("Counter is {}", counter);
 
 
-    if buffer.len() > 0 || buffer.len() < 100 {
+    if buffer.len() > 0 || buffer.len() < 1000 {
         crack_batch(&buffer, image);
     }
+    
     Ok(())
 }
 

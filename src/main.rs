@@ -28,8 +28,8 @@ struct Opt {
     #[structopt(short, long)]
     accessible: bool,
 
-    /// How many threads do you want to run?
-    #[structopt(short, long, default_value = "100")]
+    /// How many threads do you want to run? Threads in Rust physically don't cost a lot, so often you can run more than you think.
+    #[structopt(short, long, default_value = "16")]
     threads: usize,
 }
 
