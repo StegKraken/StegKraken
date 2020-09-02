@@ -31,7 +31,7 @@ pub fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()
             buffer.clear();
         }
     }
-    println!("Yup sir I get here");
+    println!("Yup sir, I getz it.");
     println!("Counter is {}", counter);
 
 
