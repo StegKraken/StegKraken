@@ -9,8 +9,11 @@ Fast Steganography bruteforcer written in Rust for speed.
 
 # Install
 ```
-cargo install stegkraken
+cargo install rustkraken
 ```
+https://crates.io/crates/RustKraken
+
+
 
 Deb file here:
 https://github.com/StegKraken/StegKraken/releases/tag/0.0.1
