@@ -5,6 +5,7 @@ use std::io::BufRead;
 use std::io::BufReader;
 use std::path::PathBuf;
 use std::process::Command;
+use std::process;
 
 pub fn read_and_split_file(wordlist: PathBuf, image_path: &str) -> io::Result<()> {
     let file = match File::open(wordlist){
@@ -57,7 +58,7 @@ pub fn run_steghide(password: &String, image_name: &str) {
     if output.status.success() {
         detail!(format!("Correct passphrase found: {}", &password));
         println!("Data extracted to current directory.");
-        std::process::exit(0);
+        std::process::exit(0x0100);
     } else {
     }
 }
