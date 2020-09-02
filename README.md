@@ -7,6 +7,14 @@ Fast Steganography bruteforcer written in Rust for speed.
 </p>
 <hr>
 
+# Install
+```
+cargo install stegkraken
+```
+
+Deb file here:
+https://github.com/StegKraken/StegKraken/releases/tag/0.0.1
+
 
 # ✨ Features
 * Runs Steghide with no password
