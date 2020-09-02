@@ -58,7 +58,8 @@ pub fn run_steghide(password: &String, image_name: &str) {
     if output.status.success() {
         detail!(format!("Correct passphrase found: {}", &password));
         println!("Data extracted to current directory.");
-        std::process::exit(0x0100);
+           std::process::exit(0);
+        //std::process::exit(0x0100); exit code for Windows
     } else {
     }
 }
