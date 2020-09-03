@@ -1,12 +1,23 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <string>
+#include <array>
+#include <algorithm>
+#include <execution>
+#include <functional>
+#include <iostream>
+#include <vector>
+
+
+
+
 
 int main() {
     std::ifstream file("/usr/share/wordlists/rockyou.txt");
     if (file.is_open()) {
         std::string line;
-        std::string buffer [1000];
+        std::array<std::string, 1000> buffer; 
         size_t size = 0;
         // std::vector< std::string > buffer;
 
@@ -20,12 +31,12 @@ int main() {
                 size = 0;
             }
         }
+        run_batch(buffer);
         file.close();
 }
 }
 
-
-void run_batch(std::string [1000] batch){
-    // std::find_if(std::execution::par_unseq, batch.begin(), batch.end(), [](auto& i) { ... });
-
+void run_batch(std::array<std::string, 1000> batch){
+        std::find_if(std::execution::par_unseq, batch.begin(), batch.end(), [](auto& i) { ... });
 }
+
