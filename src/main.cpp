@@ -23,7 +23,6 @@ int main() {
 
         // reads file line by line
         while (std::getline(file, line)) {
-            // using printf() in all tests for consistency
             buffer[size++] = line.c_str();
             // buffer size is 1k so we call steghide on this
             if (size == 1000){
